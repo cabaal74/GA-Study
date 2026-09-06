@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GA-Study — Central de Controle V.1.4</title>
+<style>
+:root{--brand-blue:#050A30;--navy:var(--brand-blue);--ink:#10223d;--muted:#728197;--bg:#f4f7fb;--card:#fff;--line:#dce4ec;--accent:#23c6d2;--green:#16865d;--greenbg:#e8f6ef;--yellow:#9a6700;--yellowbg:#fff4d6;--red:#b63042;--redbg:#fdebed;--blue:#286ec8;--bluebg:#eaf2ff;--gray:#687588;--graybg:#eef2f5;--purple:#7253b8;--purplebg:#f0ebfb}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+.shell{display:grid;grid-template-columns:245px minmax(0,1fr);min-height:100vh}
+.sidebar{background:var(--brand-blue);color:#fff;padding:22px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+.logo{width:180px;max-width:100%;display:block;margin:0 auto 10px}.side-kicker{font-size:10px;letter-spacing:.16em;color:#76d8e5;font-weight:850;margin:0 10px 20px}
+.nav{display:grid;gap:7px}.nav button{width:100%;border:0;background:transparent;color:#d7e2f0;text-align:left;padding:12px 13px;border-radius:10px;font-size:13px;cursor:pointer}
+.nav button:hover,.nav button.active{background:#113066;color:#fff;box-shadow:inset 3px 0 0 var(--accent)}
+.gate{margin-top:24px;border:1px solid #2a568c;background:#0c2857;border-radius:12px;padding:13px}.gate small{display:block;color:#72cddd;font-weight:850;letter-spacing:.1em}.gate b{display:block;margin:6px 0;font-size:14px}.gate p{font-size:11px;line-height:1.5;color:#c2d1e4;margin:0}
+.main{padding:26px 30px 60px;min-width:0}.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px}.top h1{margin:0;font-size:25px}.top p{margin:4px 0 0;color:var(--muted)}.version{font-weight:900;background:var(--navy);color:#fff;border-radius:999px;padding:8px 12px;font-size:12px}
+.page{display:none}.page.active{display:block}.page-head{margin-bottom:16px}.page-head h2{margin:0;font-size:24px}.page-head p{margin:5px 0 0;color:var(--muted);max-width:920px}
+.card,.metric,.phase,.box,.prompt-card,.section-card,.record,.evo-entry{background:#fff;border:1px solid var(--line);border-radius:14px}
+.metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:14px 0}.metric{padding:14px 14px 13px 16px;position:relative;overflow:hidden;min-height:88px}.metric:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--gray)}.metric.ok:before{background:var(--green)}.metric.warn:before{background:#d9a514}.metric.open:before{background:var(--red)}.metric.future:before{background:var(--purple)}.metric span{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:850;letter-spacing:.07em}.metric b{display:block;font-size:24px;margin-top:8px}
+.card,.section-card{padding:16px;margin:12px 0}.card h3,.section-card h3{margin:0 0 9px}.card p,.card li,.section-card p,.section-card li{font-size:13px;line-height:1.5}
+.badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:900;white-space:nowrap}.closed{background:var(--greenbg);color:var(--green)}.pending{background:var(--yellowbg);color:var(--yellow)}.openb{background:var(--redbg);color:var(--red)}.futureb{background:var(--purplebg);color:var(--purple)}.ref{background:var(--bluebg);color:var(--blue)}.blocked{background:var(--graybg);color:var(--gray)}
+.owners{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.owner{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}.owner b{display:block;margin-bottom:5px}.owner p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+.updates{padding:0;margin:0;list-style:none}.updates li{display:grid;grid-template-columns:125px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.updates li:last-child{border-bottom:0}.updates time{font-size:12px;color:var(--muted);font-weight:800}
+.phase{margin:10px 0;overflow:hidden}.phase summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px;cursor:pointer;list-style:none}.phase summary::-webkit-details-marker{display:none}.phase h3{margin:0;font-size:15px}.phase-body{padding:0 15px 15px;border-top:1px solid var(--line)}.phase-body ul{margin:10px 0 0;padding-left:20px}.phase-body li{margin:7px 0;font-size:13px}
+.bar{height:8px;background:#edf1f5;border-radius:99px;overflow:hidden;margin-top:10px}.bar span{display:block;height:100%;background:var(--accent)}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}table{border-collapse:collapse;width:100%;min-width:920px}th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:12px;vertical-align:top}th{font-size:10px;text-transform:uppercase;color:var(--muted);background:#f7f9fc}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.box{padding:14px}.box header{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}.box h3{margin:10px 0 6px;font-size:15px}.box p{font-size:12px;line-height:1.5;color:#4e6077}.meta{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.04em}
+.callout{border-left:4px solid var(--accent);background:#eefafd;padding:13px;border-radius:9px;margin:12px 0}.danger{border-left-color:#d34658;background:#fff0f2}
+.handoff-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.handoff-grid .section-card{margin:0}.handoff-grid li{margin:7px 0;line-height:1.45;font-size:13px}
+.protocol{counter-reset:item;margin:0;padding-left:22px}.protocol li{margin:8px 0;font-size:13px;line-height:1.45}
+.standard{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.standard div{border:1px solid var(--line);border-radius:9px;padding:10px}.standard b{display:block;font-size:12px}.standard span{font-size:11px;color:var(--muted)}
+.prompt-card{padding:14px;margin:12px 0}.prompt-card summary{cursor:pointer;font-weight:850}textarea{width:100%;min-height:320px;margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:12px;background:#f8fafc;color:#17253b;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.55;resize:vertical}.copy-btn{margin-top:8px;border:0;background:var(--navy);color:#fff;border-radius:8px;padding:9px 12px;font-weight:800;cursor:pointer}.copy-msg{font-size:11px;color:var(--green);margin-left:8px}
+.evo-list{display:grid;gap:12px}.evo-entry{padding:16px 18px;border-left:5px solid var(--green)}.evo-entry h3{margin:0 0 8px}.evo-grid{display:grid;grid-template-columns:150px 1fr;gap:7px 14px;font-size:12px}.evo-grid dt{font-weight:850;color:var(--muted)}.evo-grid dd{margin:0}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#f5f7fb;border:1px solid var(--line);padding:2px 5px;border-radius:5px}
+.footer{font-size:11px;color:var(--muted);margin-top:24px}
+@media(max-width:1000px){.metrics{grid-template-columns:repeat(2,1fr)}.owners{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+@media(max-width:760px){.shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.nav{grid-template-columns:1fr 1fr}.main{padding:18px 14px 50px}.top{flex-direction:column}.metrics,.owners,.handoff-grid,.standard{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+<img alt="Gibs Academy" class="logo" src="data:image/webp;base64,UklGRsQeAABXRUJQVlA4WAoAAAAQAAAAZwEAswAAQUxQSCAAAAABFyAQSPylQnuNiIgDMmmbip/8/Yno/wT0e/zHf/wHXlZQOCB+HgAA0HIAnQEqaAG0AD49HIxEIiGhk3rNZCADxLK3cLffAAzBkO4F9jO5H3/nP8i9xXx6Dm+86Q7x73q/mL9afgD6Bf7keoD91PWS9Df959QD/adSV6BvS4f3Hf/+BJ/oH43eZP88/sv5Sf2LyG/Xv2P8h/7X/5dJf+KfWj7f/cv2y/wn7e/MHfj8hf8P1BfxL+Qf2T8m/7L+2vIk6R/sf956gXr79B/wH+E/c3+4eor/iehv17/xHuAfzn+t/5L84/Wb8Gj1f2A/5b/Sf93/f/y1+lv+Q/6/+T/1n7re2X80/wP/J/xf+P/Zn7Cv5J/TP9n/eP85/4f8z/////5NP3W9l39qf/yZtBov9t8kppVg2lWDaVX+mV0jH5rC+ZY/VhIlNKsG38YJWiS83CI9bnadycSwLT8n4RA5Sn+ID9muyiAD4319uH07XN7ATUEhDPKGhE3rLQOtppZNXytGJ26/K4NzorpPX//RcT13jGPU/vGrTKsQXK6HnA+WLNhg9+68LnXIxl2qpktFguXMP+Gd+ZUYpfc03YpvBnoNIt+BbxqgVe43eqtSyXdIdTG6ZdsbOuvHOpyWhihF26txCSs8+1hPUYHk+cdXPnxN7/f32kzzuY1tGIu+tSEGNLPAtuMUIpnbG9UDmy8007ApWG4OzsqBCccXJCr077L16FTBOysdrhmEK4/+anUzlF+lTXicIJZ+Tl9DOTDz0uVcv1mFxhYoB3Pq9uwi2CXPrznuabxC7ZpCRmJWdtg/TOj585c0fnRCVESXcVMMvlO21ZWLuh7cIUQMiKPLsFOWette9Bh3pYKXAvms2qLlEFpGdcW3/trAAjyDEtagnbWfbRpsPccIXXKHNYCD/7b0lp+2m8LsKQqZPJpaBVBlMUShycv09L2hw5NGSjBvAGj7H61bkDu+fR0giDne100i9kSM/SYdXnWiW1tQ75f7radu64j4n5kMg/G5D8AuyplrHnRUR92wN4Mi0kzuHPqK4/I6N6AWsZD/n3uecd+ATfY0Q7o1Wl7Rwk7T8ED+Wfn3GAAMWNS7uAuHkQ1nQ5GZd++aHG9TEkfnWeIxBud8sE05tA7TimISRig+vHDEFHPZzgmfUFpwQi1eoOYhml7RFdDW8qmJFxFRoiJtqBRDyk+qVawiMW/XEQa5+MdggQ9fIUr6bbWf3RiMUbDLlq8zwfP2LhZCLLlZ2r7b5JTSrBtKsG0qx3ZLfJKaVYNpVg2lWD5wAP76JAf875V4JpPtEEP+wgYSAALsAsyAEv7pY5uCz40JmTt/ik5uKVPwx1lceDSTYdciTWo8CHyWFmJPANaQqMRqqHc1V0W/VINKhxN/T8VOnNMxgbj6DN9p2OL8FbvTgAI0mhaxbYn75K4Kd1AqKAADOIDffuE9L5kENqrbShOoTaYth1nIk6xgL1zP/v/M324zuDSy1nD1C9N3f/4GlgH6/QXpLMG+SH4rlPVyby+aIq31i1Qu1dkOq2x9pri2KxsXGJ5qh64WUrlb3EK3eozxm+qDoNyQvMbJGywecyQQb8oRTPoBzaq4VqBSZ/Wm22VmUVIQVIB08QQp9BGofm7KGFiknHxJZmf7wLp6oPK8dFn9evbi6BHjeA1zM2B376cwOsG6Y11D5WlIvScTV88imFl4gitYGxQ/ut/fV75AABiWrwMYg+nHprQR3SL33qNRWPVeTb5IERIPVHGvMBxWBBhX62Cl1aG+rU2bh8rfwMHT+jXc1rJVxluQKbAj9evPFONw85yEj6eCRKNgtZgezHTrlmL5Nr2QvwKHF5/8+uzrFQ73mvpaYYMhJUVuXQspI+SzPmAHoV29psLk81xeEmJGe/R8SNKNpLKEPOyoHM1dSzTXCLxzg+WlXrttZ9vTqo40kRnInAImTo9hiwhoaX7dYEw0jAdKqk+fmqr0rrg1rZQHd0f0cu4N5jTEVBvr4fLVCustoJuEyFll+KXHHbiyte6HKq5dUNfWozVMrKoa22zTAoFZmRbHb9Ojord2vkIOz8Uo09H/dycbwsrGKyaLCh6rppY8EGwXP7GCQyR7qBJUQe5jWrPxgylipGemMya/2NvBpf1oUa7+L3UftXkfHm1G7W9XYWfvJaLP9TE4K6ggfc9ukXftM0I6jqdoM7a479eZspUNhSro8waGXbp49NOuFxteNEnUHqCGPAtojAtM0g/s7eV5FQ9cB4zw8PmvBAsrwc/oZ1/icyYt9h73LDHuM11dk/yno+t77e1XB1lILiBdmkln5dEhpFjhLGqUwqM++4PTRXXxd6/PngF4/f+MHHap/8Rjnz+wohPb6XHl4hjgOjSxR7pYOqE9yZc9BhffAR64s/pQaO9/fc7EQ8U58MBI3XYBIgafGCCn3ulD0r+Qzzuf5wc3CPwzIaoUfkvYlIfTb8PnrO1xmGRdGdhw6AenJvtlApzzjI9ZkPZR5y16FdR03wCIhqJ6Ec+qHlXU2TuC2d3m0HQYmr32OqbEAh8ca0qx3Oe/Ar/pMDSCXXU4TW2KG5wt/gnoWSHgQ9crs3XnhFw3aPojYdaANthL3QCADumafU86GZM6Br6QQHa7vL67A6RT0KmecvQu+VBTf/3oe8gdvxa/eNyEBVGGcj9n5cTJi2SWFIcYmXY6eQyvmay2tYo6157+YF/FA1yS/t3ALHfwlFehcZjP+v/AR5c2K0s/Aeqh3VUVj9Ykjo8U8A0GTCc43HtLDKJNDRMHOv/7Yv61BeF3cvDdYAEL3gdvL0SfuSvR6uBUTx+YVF3KcDv1ZLrez5pEBz6rblvy/UF+pH9w14B1GVsoD1tBuIKb8SAyJPNCGd3Q83nrqK35CurXvta1TtzoOCFVCiqqDGLxEmJf9sn5nkRg1vZF99vPhQVb7/sQ7l7dpGN8u92YfD7BW//5YJHhqXOtCJwcFwTBDlKxI0h7tOAlqTeMB7EH1qTSBvWulvHR85/4IkuIaYr1QKNurLfMRZt/9bzUGG22XvwXTJrZikjRnzLmeL8CF/RKOWZ/YRMm00IAhai8WvJ/roEBGLeOJxTeNiSHybeqIONKuQJ6oOCPrT+eJwk6ii/XJzO01GQXdO0rDZOItZ+bAF57mY7qom6BvPMiR3T2oXkPhs0OMd3qBnf92RzNe/eXnl5np/dTQhf9IpE019oBwTXkW1rAIWTKQfv65evblZZDygi6+Fahk/z0NPINwfw+l4dhKg5cAf6u9COU3XqxP/kk28gXss521Wrp9VaRHaf+36ZXUux/vj6fM3+d9DxGeMkzLaWWjXWct0jeUoaAkws2tiL4x7Z8bT5hasDyFPQW1zI17zNZBtDzL29OViGVGikD8dXicr89CJyYhxKmzwmkeqHTIN/jsYnQLQXJRD+H4mlTaIoiMJXC36RQqOdP1/VYX77cOEA2Wf9kpUT73J/Nw/MNNELPZ/MnfA8Ect7484fdBPXY85j/O+GhzWbYGYU1oPoLFrFRcWV/O3WRWpJmjQyhlQDyZvXaTJLrG/BD22IWqkEM7pUiYSRY0PXoQaYJUnpEp/4R1JvnJ7saZg0yEvrC7z+uKiC43vuOnaYh5t80WSjmz93XtvJ+e5z6F5dzasvFUc92HrCO1CsIr632XdAeJq5LzhED0Nfza/F2HcwTHZRbnmwsqm8qMwGYpCgvnolbPpAsleLKBQdzMIZocUCY2lllPMtJQdevQIoiTTiYhaely+t6qZ5EgqF7yBaUZgxUhSJF8Ec1xntNS5lhmTyfjHKWfU+iaqyK+wEgeOar1u8FVz5oLeYIsSglt8IdyiP3FbMGoipPrnszdUK6Q5XUYB+dXU80ejik4QhwoxxagTtK3a17w8Gqlzys6R+Pf5cKxfKlOx1fhcZCbKBhY0wS6+SGL8LFzzg3u1xrRDPQqwEI1mT3MWgL310q8xHqy+IUAG6/gDE7RxpHuqtU1FMd9yTKzM2Pd6gEs8dvoZbCpJULJYVjSi9FlmP/VyEibKx/xi+xPKTOyuV5FX41kc8HhZJldqJty3AmyrxTCiDEKI18i+QfJeAx04SvrH1qczgFtkdLpd2qXDUiw/xx+og2R4gVeDrDaUOWIWZn3zcDF4Mf9kW6VgJJ7TUfzW1uYX2eymzMS0YJ/rhInb/KWlOM8l4oymqX7rfjRJN9yNaifWBFsjI65SX8sZJAHDrbMlnOzUrVJ5h/0o76tbO8Fr6RmPYFcuMe1Ftp8OFKLwBAnntbkbRjzxHJZ9hYNnwqZOaYNHy/oi4HEgOZ8TMb2W4Q1sZpJY9enhqh/1ytfA6y83BsXAVwt8hs3X0OJEiqNgnbzO8YA8kJxE7L0MyGDbyfU6oue9xqsI9pYadsFrfW9F29IV9yhA16kUOw47oIY4gtcNHOrl5sySHuSVjEEopEyOsbERbeaGl2LL8Thnty1tXh/5AZu4qu0/cnmjcerh+0rUBW0T9Q0ASRtRr2P8e8kqWj0jiMmnAEHPCJqrxMtPsoDm8pcG8QJHurF07e9B04rWvUSsg1uc06WZVPeqKWREB2w/OPAEKDRMD4H15Tkr06AWK9iqVv9aJXBvh2bKP6JY1Eygu6CdJICempUVpfbliMUoLCy36PhbowXBWDx0xfFqKo66jNNa2f6GzYUd9bm/jMp7Cn+XHm5CgFZP2NxrofY/L4PRpZyMUG3j/e28Rpfuv/S8igtyXm0iq30f6wbg+rDc9oslKvENZN3mBRarJFWJk52ZNwS+LSlfdeZL3f0iU9TzQblofi0V8eB7zAoSSi0Upg5WE4h06F+L/J6n2oYJvG5Noe1spEnk+rKclY5yqZw+QmtvXTwyIXx8xn5PttUdta7vxZItN23nPHpQabcuOVy4dTViO2Q/Rq39ukLMWlJlGmrr+UbKetcwYR6+gMNf4QFWCgmfP3v28bYARnSTTIAhO6/pwRzb/c3KCNQ31rR942XCd4avoVJM6bArv1ENr4d3I7ZaSSaZ7GbNYMTWSBabnvZxOL/VREEkzCg8GsooCBSac1/7BD78v31CTufIx2pQb4fRakGMsUEQ6b3UeeVH9gN9jhwc0frKvAtv9WPjYF2YxNb3vH7DnR5J+5QrFaKJZu5V2jwvIWHcnIE9IXN2PNPOeVMst9Do/E0UtEJuDs5oYXBucJ1YfUK/egg6pHl17iinOZ7UN1PtIanlPT7YgYlihEqzJtTILwRvoLK++GZ9VeHbFBALwIlq9jcKW7rZu3auh6P/rNIX3t2vZ6SEviNpLZDQoztYN/0LOpRTYVLCGzPyQVjYG7Qem30dWt9kyG+HzUOOObD6iugOGLBx1c2BWcz7Ax55fG7seeNkTwRymu6mkg5HXcwG+SZcklkJP19/8QnrPVhtYHBasfOEFFqhDB6H7alwuhFHlZY6AM4FKS7zvZcTIkNBGx85IC6mBuKp2JC8ZiVEVdJs/cxduVzcRIqtdC/C5khStLseGh5bTjFGEf5/ZR+FC8W79fHsnOGhC8FTvbKLN+GRxuO9947sfPdI1KonrIHsvoKrbJMSPPS9o9fCfCITwhC6EKOS+mw7UXhSEcZc8B9ju+z+uP1JQweloTnQOisrLhfjX66yuTRv779/8+T7AvMc+qZknkzf6lt/gZNpdsKjyN+/vKcqRYpPsXrs05KZ7fMeJBP/cNu40LwPT1aEOdO3yi8/I085RFjCow2T9OLuo2v3u8Kc3dwppHD/aBumgdJfk+iQ6nLgzS5NKZvwqNl52KPOxwpDEeZZ8fK8ViRQ8exjtJQ/un8LkuoYPFHusffKQfnUM32mqVKrbrrvcEXjEN311GWPRPYVzCbY8NTHi39G1EiU/nCzRq3NmovKyfaz284Ano3o3zzw68ODF9gGiOC1Leid4Yb6H8QPZKD8OurEHnEZZA5a7hVnbvQTPaC+/Kl38Sd4Q/U5asp3y6GCIWaEJsFGTR4tinUdulhWIDQ/1aAHBEPI7Tvjm1wFzDLQGzx0LZE6oF+zeceSjYP20/sk9iIYvaTq0xB0bhCnbc8c2J5cUUWo+Biu1R7BSX/Bpncs2ZurIJ0qQ1atKvksmdFfwUDHbf1n3qlBVsqTrhITANdXm57HBWka4PmZZA06WnPaxa/e8yejTkEIsNlGw1n26cSCJS5rkLIKczCKdDe2+D6+/aCrUTWWDAVBsGFFzUPQHJylRyWHc1ZAIuhyfIRTdYsFacrs/wgUvqa9xu8ys/B3dxM0FLeWChCKI1/mFhpNAal6ajlCOwoAc40qumv9xtQhqChbb0LJohkjWC0aytcnxKYp4xtzMRD1bGc83gCBxttfViYK9i2pnZcxd4M4sFUKdroztb0KGGUTAKWc9Z661SH3T9iLO2NSucRQ/uFoGNWuP0yu1H0+pNn3ECBQ3ng07lKXKf228+Z/dGhw73VzY0rQRJ/n4y5Dls883STOE5ynfcNJvFbVxefiE7CaZC6E5BjBrRcIdCT7Qb4zwsyM0MBVyfkgR/G8E13vsxvUkawuy46Try9Bv3mRXsbPzy+Z8wR0Av+PqXq8nE8d8g9V7E8jwOfl3x1Wk3g/15HelFifEX8HB5c++0LPd6b9l/Y4s9jC3lKsVLNVNRcfBmfNloCSyXcv+Z6bA1mTejvTsmz3nykdZGKiPVPhd1OZhPyopawbbO/yERNrSWWmZFCGrfMjut6HZ9IeMjv8jCslGuGF2qeopii6abCFlsH/Az0l8p4GFrHvBRHoAQSI2ZBHoAiGZ3R4DGqkRtWIufr1VbhBhGL3RWM1hkngVgTAvJjXbiYd4YPurYWdju/bw3p72R/ioB6GmJwxySc8oF5lc3lHmmNjTcfNEVe1PEj/jOywTCSlEajkF/tcDetGBsT+o7t0tctvN/IEDJMAaCRnqdg9Rq6iQ1jBZroF2adhjhrX5Puqg9F0lGArYpsQfUq5BOeZOENpjicm7gl87/jrF4n2BymV6S45QQdtIFgeGXSR7WzorvxM3EPJQwgggI9uAS3zTn3NXIc7XmdjmA/rIERjL+mRwtfuQf3MTRhKk+Dkg5oektZ/96piQ0o2PbnYniEF5zZKnshmtS61cTKJYst790imDHbb5zvZMCdBaaBd2WdGBNQngIYtnB+/s4tD1PfZm8YlMsMUxXW6EbkMapTAeudoNQ4t0VQfJGzCG80dMV16EO7vpBMPSe309Bt3K5/bSsEXYE6S/3fNlbGxDDO3NnixJ5xul2EBFTLyv8/0zwVRQtuCCHRBtDYZjgox7ox51Ia9KfbI1lU/Qd4vTTSAQvkdSmP99/LrevJUZAinq+c9THKNPlvYq8VDK2ThyHo4blN2siGrEUs6RmgLhoGrN7WxRQNiuwzVpKnefOoWH1NLLy2jv/EAVtXUKEWjuFFRAQFywkvH1t0B20TMnVYDLFPfDlLEwRW3ZGlTZCxeyYBUn4TUGxhXMEG9E10RTXH2ncfbSaAeTUjuvdyAX5P0L3dRAvkwPCK1TMxce+k/rZuNxlGIctVCiJtsk2Az3TEhyDcWU4/3KbZ5dpGjLJiQnHTgFMhKt5ld8dmU0QzcMJcQkd+A35pmJu8/wfkH0Xp04mcWd30LqEhCU66j5HWaZ1ys1sgwHykJgPsnPfMgL1yQ9XwQAtMPRFdBzmo6URvqSmIU5d3dr5UH0bHzKzzGum4fSHTc/gZrmetHtohbhh4N3Ga99IEKrtklMwxb/dcamKX1+AYtuJgwoNKMFJzRyv/k9GZM7a/ksyNnlY/o3BS5GbuNY6jhfDC1/r05AcgHXv5BadMEZhhWMylRwdxDDXoVSn6/G1CylbpOEBQvdXK5qV6DSu2T1LVa71ubogqw+2SbAi/a+52fTIdR9Dyj5OgAiDwCAc8uJkSsE4sUREooKVye00jxpy4YBOxwrKx23IiS4odD26Tr/ZlrsHvB/IjkaI/o3HdfmMi2b4eNhm3ouli8cGRAAMnmWiZbhRbaO0vdEnB3Uj/cIL8CWpl7/B2Ly9ABqRsFEtTAqM3OuBa/7/jLTeavLyvyM+L4l5OZiLmTSrWstdH+eWcBNMdHpQfkY5Nc0LqfRDbGtP0KKd+gdH1KZta7I95oOS6AuQDR6m0SoHGoLVusqA3ncsl9nvsjHTpvBKpFjAUGKyWa059iUQOHzxXOo5c6xTju3QgOKk4fLHOhRgkpAw7wY3glJN4xsv8DOKwBD9aCzog8MI92y6vylRinWBkBV/D66WodPCWd6Yb+jKlmWo5Ej5xpG7VkR5olIuSlkCxin4kXQmsTv95fhp4yhg/K8mAWM2eE1T1k2QjCGyY8Jf5JZVpHQ+55R0HjshijVF2cIWu/MuDUcfIaw/iPEPztgT32Y7FMgtt2e3Wt9HhL6zc+yjNQeL617SMVnMuS9BO9++FY0LARQ8v1TpQs2xIbuI7fT7hqfzOWsVxOS8zWDuQDoanwjBwMK+b/eVa1xlTZyEM/P9U2rbqXEdTPMjxBPeROib5ZL+VYYdZDt6ut1+utnp1qTTbRz9MG/XOdY6Gju7f+ezDI2vSC/hy7huay2pP3IYLz8CBFYasCFbRnq+REkurjE/lJ9PR6cUcrPVti0aVsEpLTMeZdOFBfmanKZhNtocVknfxAk0evXRDNmqGJbvT3ClSx2z1bUN+8Y/E/IVKpA2mvvM3zKWjzyImicxqZok93veEbBq1XBwIryEkc1IJOWY3L5BYGEpDqNymH1u1n7YC8TL3Tqd8MvacbRljasU8AzLRUZzyvOfFjLIituqI87K/wgIMUUFsoNQ4m82553lcnn7eOR+uiex+K0IQ8bQp6XJ2znRqIlD7JTbgR8DrP0WPULCfm6HNDv8LNs1sztAA0a/muueerE/QEZIutjQ11jQt1xU67BPEaV/LKY4AXQ/zU6rCHZvpIP2KPJg3Y6FB5UaQal9TejrhYA/XYlbzwkDid9qWcW03alnoy/dFmqNy6VUHHst1TAys+xc2fEx5FGnN40+0S+xmuzBHilAjlHcU4+w+SREK/aSzoM53YGe26DQc1cD1XIDHRjK5jbwSwszwI8zkyeufjVb+4LV0srgkBlcDyzMirwBtaTvvZkNaCLd+91117HbqltMqK7sTJLnvMsPiRObb5CpRZ9cGyipR9TYZQwrI9fIl6raHjo+J6eZWb56Q0b7Dp+mk53b68qvl6jy2xxz+kCRLhdIZ8TXRODSi7KAAYlxZxPNCQchCzMX/2d+cHjYEMyMD1fL86KPO0fvPPcE0K8y1OCORjMXvXdxpXWO4ilZRoHE4b8w284/xCmwE+axaFZ4GIq5Hr78WPapxBMqyageBMW8q+6qd4HNG2pl0FfdvJSqGJ6xFPE5iaX8KN9ULOLWqEBD/nN4Ie4iyu9uqNrJexLBuZDZHm+G3KK5KNGHjXM5DEpR/mYmevZJE4wO1WkFIuwNLUuXlIS6DacMvWOVM5WES0Dq5Z3TAeT7DO4WoS1YkTj5MreVrGPnSvSfR9fvO7A7Hpgk/cH6Ep1T9ikO9ulrti7H1Uttdtodb7P6LYMPu97BPJYBTSRBAcsZonSMK+v5UjKpedcrqtTbf9kew01uV0VSCBu1PDWCG67gZxPMzudxiKkJtoeNebD/AwXmgNN5zUUG8N2ZV5T/oV4z9bELe0ooZEgaOvNigylOpCDcUtTtenpQTerkihpHZcaFabkF6AqRKJD8co3Q96+7zwzW6V9FocZBzxjahs7oq0H1dqR3cxXiRX6AgPUzRKNVwQNXeRGTUwN0prYFEAM3c+gPDVbdLUeC5JerRyVnhU55fb+5kNFYiN+Xp4YXEHFdNRwfwDAgzMkN5Uuuqa/U+IRAFoCRvdXGd0eqAurOFGGVsB5LoNiRHiWIInpJfvmCLuLaJajC1E47aE2MJnI60OsnTGYEvZfPz+AfltoOJhlEFXkriF2xxJ1MFyMKTm5bMIicle++EHPGb6+zm7hE4J9J6oly4e6uRNFe8fV6cdbKkfTE0TiRYDbB+2MTVY0biJVN7TQj0XXITS1EykGisu9oorg62/VI0nyi1IzxgT2N7iIa04+4X7+78lw5ny1e4EIBWU1ayyK8/450bbx9Iv33he444K0GafWZnwhVv73Ioz5b1I3VuQdXy46Glynr/1Gc5y6PalorIlEl38v8OHwjp85mVY+sw3BoBIv0jyD/SkKbOoCXIifJ/EQXoUPIOG8/OlF7c+15hRTPwwUY+lmZxzjfa6YfVtZN9S+BaVhNXdYvPIXO18en2ToILR0deO719BCGPYbokRB8yRJG42cFOggt5/74dGTwCEEG0XX4qAgAAAAAAD6wAAAAAAKmrdxh5+doPjM+4DDucfQ8vGAKMgIYxf5t9fm+d6ZSALTYN+2bVMzsbLbXFXXFuJN1wvHfa41pL2ISecORtK2Mw6FU0v7eOcBCtczrdAPpKlTPvoyFq7z/FQxUpJyIcAnIsZz51gV6pO8H4AAAAAAAAAAA">
+<div class="side-kicker">GA-STUDY — CONTROL CENTER</div>
+<nav class="nav">
+<button class="active" data-page="overview">▣ Visão Geral</button>
+<button data-page="master">→ Plano Mestre</button>
+<button data-page="dev">▣ Controle de Desenvolvimento</button>
+<button data-page="conf">⌁ Conferência</button>
+<button data-page="risks">▣ Riscos e Evidências</button>
+<button data-page="future">✦ Melhorias Futuras</button>
+<button data-page="evo">↻ Evolução da Central</button>
+<button data-page="handoff">↪ CURRENT HANDOFF</button>
+</nav>
+<div class="gate"><small>GATE ATUAL</small><b>FECHAR AUDITORIA INICIAL V.1.4</b><p>Aprovar baseline de governança antes de publicar a Central em /control e retomar desenvolvimento do produto.</p></div>
+</aside>
+
+<main class="main">
+<div class="top"><div><h1>GA-Study — Central de Controle</h1><p>Governança independente da Central de Estudos da Gibs Academy.</p></div><div class="version">V.1.4</div></div>
+
+<section id="overview" class="page active">
+<div class="page-head"><h2>Visão Geral</h2><p>Resumo executivo apenas. Os detalhes pertencem às páginas proprietárias.</p></div>
+<div class="metrics">
+<div class="metric ok"><span>Infraestrutura</span><b>ATIVA</b></div>
+<div class="metric ok"><span>Produção</span><b>ONLINE</b></div>
+<div class="metric warn"><span>Produto</span><b>EVOLUÇÃO</b></div>
+<div class="metric warn"><span>Central</span><b>PRÉ-PUBLICAÇÃO</b></div>
+<div class="metric future"><span>EAD ↔ Study</span><b>ADIADA</b></div>
+</div>
+<div class="owners">
+<div class="owner"><b>Aplicação</b><p><span class="code">study.gibsacademy.com.br</span><br>Exercícios, simulados, jogos e estudo complementar.</p></div>
+<div class="owner"><b>Repositório</b><p><span class="code">cabaal74/GA-Study</span><br>Branch oficial: <span class="code">main</span>.</p></div>
+<div class="owner"><b>Deploy</b><p>Cloudflare Pages<br>Deploy automático da branch principal.</p></div>
+</div>
+<div class="section-card"><h3>Atualizações recentes</h3><ul class="updates">
+<li><time>06/09/2026</time><div><b>Auditoria inicial da Central V.1.4.</b><br>Modelo de governança confrontado com a Central Gibs Academy V.2.4; CURRENT HANDOFF ampliado para continuidade autônoma.</div></li>
+<li><time>06/09/2026</time><div><b>Central GA-Study criada.</b><br>Governança separada do EAD, logo institucional, ordem cronológica decrescente e prompts incorporados ao Handoff.</div></li>
+<li><time>06/09/2026</time><div><b>Fluxo técnico definido.</b><br>Chat normal para governança; Codex para alterações de repositório quando necessário; Work/Codex usados de forma econômica.</div></li>
+<li><time>06/09/2026</time><div><b>Infraestrutura GA-Study estabilizada.</b><br>GitHub → Cloudflare Pages → <span class="code">study.gibsacademy.com.br</span>; progresso recuperado por backup.</div></li>
+</ul></div>
+</section>
+
+<section id="master" class="page">
+<div class="page-head"><h2>Plano Mestre — GA-Study</h2><p>Proprietário das fases de evolução da aplicação e do produto.</p></div>
+<details class="phase" open><summary><h3>Fase 5 — Progresso em nuvem / identidade</h3><span class="badge futureb">ADIADA</span></summary><div class="phase-body"><div class="bar"><span style="width:20%"></span></div><ul><li>Arquitetura avaliada: uma identidade Gibs Academy, aplicações independentes e dados funcionais separados.</li><li>Veredito técnico: SIM COM RESSALVAS.</li><li>Não implementar antes de nova missão e evolução maior do Study.</li></ul></div></details>
+<details class="phase"><summary><h3>Fase 4 — Organização estrutural do repositório</h3><span class="badge futureb">FUTURO</span></summary><div class="phase-body"><div class="bar"><span style="width:15%"></span></div><ul><li>Separar assets/scripts/módulos somente quando reduzir risco.</li><li>Não fragmentar o index atual sem baseline e rollback.</li></ul></div></details>
+<details class="phase" open><summary><h3>Fase 3 — W2 / Question Words / Matching Game</h3><span class="badge pending">PRÓXIMA DE PRODUTO</span></summary><div class="phase-body"><div class="bar"><span style="width:40%"></span></div><ul><li>Escopo W2 restrito ao conteúdo efetivamente estudado.</li><li>Matching Game pendente: 60 segundos, cinco linhas, pares PT↔EN, cartões aleatórios, feedback verde/vermelho.</li><li>Validar baseline oficial do index antes de alterar.</li></ul></div></details>
+<details class="phase" open><summary><h3>Fase 2 — Consolidação da base oficial</h3><span class="badge pending">EM ANDAMENTO</span></summary><div class="phase-body"><div class="bar"><span style="width:85%"></span></div><ul><li>index.html publicado na raiz do GA-Study.</li><li>Progresso restaurado no novo domínio.</li><li>Central de Controle estruturada e auditada.</li><li>Pendente: publicar a Central aprovada em <span class="code">/control/</span>.</li><li>Pendente: validar baseline/rollback do index oficial.</li></ul></div></details>
+<details class="phase" open><summary><h3>Fase 1 — Infraestrutura e publicação</h3><span class="badge closed">CONCLUÍDA</span></summary><div class="phase-body"><div class="bar"><span style="width:100%"></span></div><ul><li>Repositório GA-Study criado.</li><li>Cloudflare Pages conectado.</li><li>Domínio customizado funcional.</li><li>Deploy automático em produção confirmado.</li></ul></div></details>
+</section>
+
+<section id="dev" class="page">
+<div class="page-head"><h2>Controle de Desenvolvimento</h2><p>Proprietário do estado operacional das tarefas. Ordem: mais recente para mais antiga.</p></div>
+<div class="table-wrap"><table><thead><tr><th>ID</th><th>Frente</th><th>Status</th><th>Evidência atual</th><th>Próxima ação</th></tr></thead><tbody>
+<tr><td>ST-010</td><td>Auditoria inicial da Central</td><td><span class="badge pending">EM REVISÃO</span></td><td>Confronto com conceito V.2.4 e CHO expandido.</td><td>Aprovar V.1.4.</td></tr>
+<tr><td>ST-009</td><td>Fluxo ChatGPT / Codex / GitHub</td><td><span class="badge closed">DEFINIDO</span></td><td>Chat normal = governança; Codex = execução técnica; plugin GitHub usado para leitura.</td><td>Usar Codex só quando necessário.</td></tr>
+<tr><td>ST-008</td><td>Sincronização multi-dispositivo</td><td><span class="badge futureb">ADIADA</span></td><td>Relatório EAD ↔ Study com veredito SIM COM RESSALVAS.</td><td>Reavaliar após evolução do produto.</td></tr>
+<tr><td>ST-007</td><td>Matching Game Question Words</td><td><span class="badge pending">PENDENTE</span></td><td>Requisito funcional consolidado; implementação anterior não satisfatória.</td><td>Retomar após baseline oficial.</td></tr>
+<tr><td>ST-006</td><td>Central de Controle Study</td><td><span class="badge pending">PRÉ-PUBLICAÇÃO</span></td><td>V.1.4 auditada estruturalmente.</td><td>Publicar em /control após aceite.</td></tr>
+<tr><td>ST-005</td><td>Progresso local</td><td><span class="badge closed">RECUPERADO</span></td><td>Backup restaurado com sucesso no domínio Study.</td><td>Manter compatibilidade.</td></tr>
+<tr><td>ST-004</td><td>Migração da Central de Exercícios</td><td><span class="badge closed">CONCLUÍDO</span></td><td>index.html carregado na raiz e produção abriu corretamente.</td><td>Usar como baseline.</td></tr>
+<tr><td>ST-003</td><td>Domínio Study</td><td><span class="badge closed">CONCLUÍDO</span></td><td><span class="code">study.gibsacademy.com.br</span> funcional.</td><td>Não alterar DNS sem missão.</td></tr>
+<tr><td>ST-002</td><td>Cloudflare Pages</td><td><span class="badge closed">CONCLUÍDO</span></td><td>Deploy automático confirmado.</td><td>Monitorar commits.</td></tr>
+<tr><td>ST-001</td><td>GitHub GA-Study</td><td><span class="badge closed">CONCLUÍDO</span></td><td>Repo <span class="code">cabaal74/GA-Study</span>, branch main.</td><td>Manter como fonte oficial.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="conf" class="page">
+<div class="page-head"><h2>Conferência</h2><p>Matriz de verificação. Mede cobertura; não redefine os controles.</p></div>
+<div class="table-wrap"><table><thead><tr><th>Controle</th><th>Verificação</th><th>Cobertura</th><th>Estado</th><th>Referência</th></tr></thead><tbody>
+<tr><td>ST-010</td><td>Central auditada contra padrão V.2.4</td><td>6/7</td><td><span class="badge pending">AGUARDA ACEITE</span></td><td>CHO + ownership + evolução + ordem + prompts + structured state</td></tr>
+<tr><td>ST-009</td><td>Fluxo de ferramentas compreendido</td><td>4/4</td><td><span class="badge closed">VERIFICADO</span></td><td>Chat normal / Codex / Work / GitHub</td></tr>
+<tr><td>ST-007</td><td>Matching Game</td><td>1/5</td><td><span class="badge openb">ABERTO</span></td><td>Requisito definido; teste funcional final ausente</td></tr>
+<tr><td>ST-006</td><td>Central armazenada no GitHub</td><td>0/1</td><td><span class="badge blocked">NÃO PUBLICADA</span></td><td>Aguardando aceite/publicação</td></tr>
+<tr><td>ST-005</td><td>Progresso recuperado</td><td>1/1</td><td><span class="badge closed">VERIFICADO</span></td><td>Restauração confirmada pelo usuário</td></tr>
+<tr><td>ST-004</td><td>Aplicação em produção</td><td>2/2</td><td><span class="badge closed">VERIFICADO</span></td><td>index + domínio funcional</td></tr>
+</tbody></table></div>
+<div class="callout"><b>Regra:</b> código criado ou arquivo gerado não equivale a conclusão. O estado só sobe para CONCLUÍDO/VERIFICADO após evidência correspondente.</div>
+</section>
+
+<section id="risks" class="page">
+<div class="page-head"><h2>Riscos e Evidências</h2><p>Somente riscos atuais/residuais e provas que sustentam estados. Ordem decrescente.</p></div>
+<div class="grid2">
+<div class="box"><header><span class="badge pending">R-007 · MÉDIA</span><span class="meta">06/09/2026</span></header>
+<h3>Pré-condições de Auth/integração ainda não confirmadas</h3>
+<p>Antes de qualquer implementação EAD ↔ GAS ainda precisam ser confirmados Site URL, Redirect URLs, domínio canônico do EAD, política de login/recovery, estratégia de sincronização/conflitos, migração do progresso e impacto futuro SaaS/multi-tenant. O relatório arquitetural não autoriza alterações.</p>
+</div>
+
+<div class="box"><header><span class="badge pending">R-006 · MÉDIA</span><span class="meta">06/09/2026</span></header><h3>Central ainda não é fonte oficial no repositório</h3><p>A Central está sendo auditada localmente. Até a publicação em <span class="code">/control/</span>, não deve ser tratada como artefato oficial do GitHub.</p></div>
+<div class="box"><header><span class="badge pending">R-005 · MÉDIA</span><span class="meta">06/09/2026</span></header><h3>Escrita técnica depende do fluxo Codex/upload</h3><p>Tentativas de escrita pelo conector GitHub retornaram 403. Não criar tokens pessoais para contornar. Codex é o executor preferencial quando necessário.</p></div>
+<div class="box"><header><span class="badge openb">R-004 · ALTA</span><span class="meta">06/09/2026</span></header><h3>Deploy automático na main</h3><p>Commit em main pode chegar rapidamente à produção. Alterações precisam de escopo controlado, evidência e rollback.</p></div>
+<div class="box"><header><span class="badge pending">R-003 · MÉDIA</span><span class="meta">06/09/2026</span></header><h3>Base HTML monolítica</h3><p>O Study atual concentra muito conteúdo em um único index. Alterações amplas aumentam risco de regressão; modularização permanece futura.</p></div>
+<div class="box"><header><span class="badge pending">R-002 · MÉDIA</span><span class="meta">06/09/2026</span></header><h3>Progresso local por navegador</h3><p>Não há sincronização automática entre dispositivos. Backup/restauração é o mecanismo atual de portabilidade.</p></div>
+<div class="box"><header><span class="badge openb">R-001 · ALTA</span><span class="meta">06/09/2026</span></header><h3>Desvio do conteúdo oficial W2</h3><p>Question Words não estudadas foram introduzidas anteriormente. Baseline didático: não reintroduzir How old, How often, How long ou How far sem evidência na apostila.</p></div>
+</div>
+
+<div class="section-card"><h3>Evidências — mais recente para mais antiga</h3><div class="grid2">
+<div class="box"><header><span class="badge ref">E-007</span><span class="meta">06/09/2026 · ARQUITETURA</span></header>
+<h3>Relatório Técnico — Integração de Identidade e Progresso EAD ↔ GA-Study</h3>
+<p><b>Status da missão:</b> AUDITORIA / DIAGNÓSTICO / ARQUITETURA.<br>
+<b>Implementações realizadas:</b> NENHUMA. <b>Alterações em produção:</b> NENHUMA.<br>
+<b>Veredito:</b> SIM COM RESSALVAS.<br>
+<b>Sustenta:</b> identidade canônica em <span class="code">auth.users.id</span>; EAD e GAS independentes; dados funcionais separados; RLS por <span class="code">auth.uid()</span>; localStorage preservado como cache/fallback; sincronização futura controlada; SSO opcional posterior.<br>
+<b>Não sustenta:</b> integração já implementada, sessão automaticamente compartilhada entre subdomínios, Redirect URLs/Site URL já configuradas ou SSO existente.</p>
+</div>
+
+<div class="box"><header><span class="badge ref">E-006</span><span class="meta">06/09/2026 · GOVERNANÇA</span></header><h3>Auditoria contra Central EAD V.2.4</h3><p><b>Sustenta:</b> modelo de propriedade por página, CHO autônomo, regras de fechamento, evolução segregada e padrão oficial de informação.<br><b>Não sustenta:</b> estado funcional do Matching Game.</p></div>
+<div class="box"><header><span class="badge ref">E-005</span><span class="meta">06/09/2026 · INTEGRAÇÃO</span></header><h3>Relatório EAD ↔ Study</h3><p><b>Sustenta:</b> identidade compartilhável com ressalvas, aplicações/dados funcionais separados e implementação adiada.<br><b>Não sustenta:</b> SSO já implantado.</p></div>
+<div class="box"><header><span class="badge ref">E-004</span><span class="meta">06/09/2026 · PROGRESSO</span></header><h3>Backup restaurado com sucesso</h3><p><b>Sustenta:</b> recuperação do progresso no novo domínio.<br><b>Não sustenta:</b> sincronização entre dispositivos.</p></div>
+<div class="box"><header><span class="badge ref">E-003</span><span class="meta">06/09/2026 · PRODUÇÃO</span></header><h3>Study abriu corretamente</h3><p><b>Sustenta:</b> domínio + deploy funcional após upload do index.<br><b>Não sustenta:</b> todos os exercícios individualmente testados.</p></div>
+<div class="box"><header><span class="badge ref">E-002</span><span class="meta">06/09/2026 · CLOUDFLARE</span></header><h3>Deploy GA-Study criado</h3><p><b>Sustenta:</b> GitHub conectado ao Cloudflare Pages e produção automatizada.<br><b>Não sustenta:</b> rollback automatizado.</p></div>
+<div class="box"><header><span class="badge ref">E-001</span><span class="meta">06/09/2026 · GITHUB</span></header><h3>Repositório GA-Study criado</h3><p><b>Sustenta:</b> fonte oficial de código e branch main.<br><b>Não sustenta:</b> permissão de escrita pelo plugin ChatGPT.</p></div>
+</div></div>
+</section>
+
+<section id="future" class="page">
+<div class="page-head"><h2>Melhorias Futuras</h2><p>Somente melhorias deliberadamente adiadas. Mais recente no topo.</p></div>
+<div class="grid2">
+<div class="box"><header><span class="badge futureb">MF-006</span><span class="badge pending">MÉDIA</span></header><h3>Automatizar publicação da Central via fluxo Codex</h3><p><b>Motivo:</b> reduzir upload manual e manter governança versionada no GitHub.<br><b>Reavaliar:</b> após publicação inicial da Central.</p></div>
+<div class="box"><header><span class="badge futureb">MF-005</span><span class="badge pending">MÉDIA</span></header><h3>SSO/login fluido EAD ↔ Study</h3><p><b>Motivo:</b> experiência única de aluno sem misturar aplicações.<br><b>Reavaliar:</b> quando autenticação compartilhada entrar em execução.</p></div>
+<div class="box"><header><span class="badge futureb">MF-004</span><span class="badge pending">MÉDIA</span></header><h3>Arquitetura modular</h3><p><b>Motivo:</b> reduzir risco do index monolítico.<br><b>Reavaliar:</b> após estabilização dos exercícios prioritários.</p></div>
+<div class="box"><header><span class="badge futureb">MF-003</span><span class="badge pending">MÉDIA</span></header><h3>Painel do professor</h3><p><b>Motivo:</b> acompanhar progresso, erros, tentativas e simulados.<br><b>Reavaliar:</b> depois de progresso em nuvem.</p></div>
+<div class="box"><header><span class="badge futureb">MF-002</span><span class="badge pending">ALTA</span></header><h3>Sincronização multi-dispositivo</h3><p><b>Motivo:</b> mesmo progresso em celular e computador.<br><b>Dependência:</b> identidade + persistência em nuvem.</p></div>
+<div class="box"><header><span class="badge futureb">MF-001</span><span class="badge pending">ALTA</span></header><h3>Identidade Gibs Academy compartilhada</h3><p><b>Motivo:</b> evitar cadastro duplicado.<br><b>Estado:</b> solução avaliada; implementação adiada.</p></div>
+</div>
+</section>
+
+<section id="evo" class="page">
+<div class="page-head"><h2>Evolução da Central</h2><p>Livro de bordo exclusivo da própria Central. Não duplica o estado operacional do produto.</p></div>
+<div class="callout"><b>Regra de propriedade:</b> esta página responde “o que mudou na Central, por quê e com qual resultado?”. Detalhes do produto permanecem em suas páginas proprietárias.</div>
+<div class="evo-list">
+<article class="evo-entry"><h3>V.1.4 — Registro oficial da auditoria EAD ↔ GA-Study</h3><dl class="evo-grid">
+<dt>Data</dt><dd>06/09/2026</dd>
+<dt>Objetivo</dt><dd>Preservar no PMO/CHO o relatório técnico de identidade e progresso para retomada futura sem reinterpretar diagnóstico como implementação.</dd>
+<dt>Áreas alteradas</dt><dd>Riscos e Evidências, CURRENT HANDOFF, Evolução da Central e estado estruturado.</dd>
+<dt>Mudança</dt><dd>Relatório registrado como evidência E-007; risco R-007 criado; decisões arquiteturais, itens não confirmados e regra de não implementação incorporados ao CHO.</dd>
+<dt>Resultado</dt><dd>A arquitetura futura EAD ↔ GAS passa a ter referência oficial de planejamento dentro da governança.</dd>
+<dt>Pendência</dt><dd>Nenhuma implementação autorizada; pré-condições permanecem para futura missão específica.</dd>
+</dl></article>
+<article class="evo-entry"><h3>V.1.4 — Nomenclatura oficial PMO/CHO × APP/GAS</h3><dl class="evo-grid">
+<dt>Data</dt><dd>06/09/2026</dd><dt>Objetivo</dt><dd>Eliminar ambiguidade entre os dois códigos oficiais.</dd>
+<dt>Áreas alteradas</dt><dd>CURRENT HANDOFF, Prompt de Continuidade, regras de governança e estado estruturado.</dd>
+<dt>Mudança</dt><dd>PMO/CHO/Central = Central de Controle; APP/GAS/Study = aplicação Gibs Academy Study. Alterar um não autoriza alterar o outro.</dd>
+<dt>Resultado</dt><dd>Dois artefatos independentes com linguagem operacional formalizada.</dd>
+<dt>Pendência</dt><dd>Nenhuma; aplicar a nomenclatura nas próximas missões.</dd></dl></article>
+<article class="evo-entry"><h3>V.1.4 — Auditoria estrutural e CHO autônomo</h3><dl class="evo-grid">
+<dt>Data</dt><dd>06/09/2026</dd><dt>Objetivo</dt><dd>Aplicar à Central GA-Study o mesmo conceito de governança consolidado na Central Gibs Academy V.2.4.</dd><dt>Áreas alteradas</dt><dd>Visão Geral, Plano Mestre, Desenvolvimento, Conferência, Riscos/Evidências, Futuro, Evolução, CURRENT HANDOFF e estado estruturado.</dd><dt>Mudança</dt><dd>Ownership por página, CHO ampliado, protocolo do próximo agente, baselines, padrão oficial, fechamento de rodada e consolidação histórica desta conversa.</dd><dt>Resultado</dt><dd>Central pronta para revisão final pré-publicação.</dd><dt>Pendência</dt><dd>Aceite do usuário e publicação em /control.</dd></dl></article>
+<article class="evo-entry"><h3>V.1.1 — Refinamentos pré-auditoria</h3><dl class="evo-grid">
+<dt>Data</dt><dd>06/09/2026</dd><dt>Objetivo</dt><dd>Ajustar identidade visual, menu, prompts e ordenação.</dd><dt>Mudança</dt><dd>Logo Gibs Academy, azul #050A30, prompts dentro do CURRENT HANDOFF, navegação corrigida e listas decrescentes.</dd><dt>Resultado</dt><dd>Base funcional para auditoria inicial.</dd><dt>Pendência</dt><dd>Granularidade de governança/CHO ainda insuficiente antes da V.1.4.</dd></dl></article>
+<article class="evo-entry"><h3>V.1.0 — Fundação da Central GA-Study</h3><dl class="evo-grid">
+<dt>Data</dt><dd>06/09/2026</dd><dt>Objetivo</dt><dd>Separar a governança do Study da Central do EAD.</dd><dt>Resultado</dt><dd>Primeira estrutura com páginas operacionais e Handoff.</dd><dt>Pendência</dt><dd>Refinamentos tratados nas versões seguintes.</dd></dl></article>
+</div>
+</section>
+
+<section id="handoff" class="page">
+<div class="page-head"><h2>CURRENT HANDOFF</h2><p>Pacote de continuidade autônoma. Um novo agente deve conseguir continuar o projeto usando apenas esta Central.</p></div>
+<div class="callout"><b>Autoridade:</b> CENTRAL_CONTROLE_GA_STUDY_V.1.4.html · CURRENT / PRÉ-PUBLICAÇÃO · Gibs Academy é a marca oficial.</div>
+
+<div class="handoff-grid">
+<div class="section-card"><h3>Estado atual</h3><ul>
+<li><b>Último concluído:</b> auditoria estrutural da Central e consolidação detalhada do histórico desta conversa.</li>
+<li><b>Gate atual:</b> fechar/aceitar a V.1.4 antes da publicação em <span class="code">/control/</span>.</li>
+<li><b>Produto em produção:</b> <span class="code">study.gibsacademy.com.br</span>.</li>
+<li><b>Fonte de código:</b> <span class="code">cabaal74/GA-Study</span> · <span class="code">main</span>.</li>
+<li><b>Deploy:</b> Cloudflare Pages automático.</li>
+<li><b>Progresso:</b> local por navegador; backup/restauração funcional; backup restaurado no novo domínio.</li>
+<li><b>Central:</b> V.1.4 em revisão, ainda não publicada no GitHub.</li>
+</ul></div>
+
+<div class="section-card"><h3>Próximas ações</h3><ol>
+<li>Aprovar esta V.1.4.</li>
+<li>Publicar a versão aprovada em <span class="code">/control/</span> sem sobrescrever versões anteriores.</li>
+<li>Ler/validar o <span class="code">index.html</span> oficial do GitHub como baseline.</li>
+<li>Definir rollback mínimo para mudanças em main.</li>
+<li>Retomar Matching Game de Question Words.</li>
+<li>Testar em produção desktop e iPhone antes de fechar a missão.</li>
+</ol></div>
+
+<div class="section-card"><h3>Decisões preservadas</h3><ul>
+<li>GA-Study e EAD permanecem aplicações independentes.</li>
+<li>GitHub é fonte oficial de código; Cloudflare Pages é deploy oficial.</li>
+<li>Chat normal é o ambiente padrão para governança e planejamento.</li>
+<li>Codex é usado para alterações técnicas quando necessário; Work/Codex devem ser economizados porque compartilham cota.</li>
+<li>Não criar novo repositório para cada exercício.</li>
+<li>Não criar autenticação própria do Study agora; integração EAD ↔ Study foi adiada.</li>
+<li>Manter progresso local e backup nesta fase.</li>
+<li>Conteúdo/testes W2 devem respeitar somente o que foi estudado na apostila.</li>
+<li>How old, How often, How long e How far não devem voltar ao W2 sem nova evidência didática.</li>
+<li>Matching Game desejado: 60 s, cinco linhas, PT↔EN, cartões mudando aleatoriamente, verde no acerto e vermelho no erro.</li>
+</ul></div>
+
+<div class="section-card"><h3>Bloqueios e limites atuais</h3><ul>
+<li><b>GitHub connector:</b> leitura disponível; escrita direta tentou e retornou 403. Não usar token pessoal como atalho.</li>
+<li><b>Codex/Work:</b> no momento da verificação a cota/janela estava esgotada; isso não impede trabalho de governança no Chat normal.</li>
+<li><b>Central:</b> ainda local até publicação.</li>
+<li><b>Integração Auth:</b> deliberadamente adiada, não é gate do produto atual.</li>
+</ul></div>
+</div>
+
+<div class="section-card"><h3>Nomenclatura Oficial — artefatos do projeto</h3>
+<div class="table-wrap"><table><thead><tr><th>Termo usado</th><th>Significado oficial</th><th>Escopo autorizado</th></tr></thead><tbody>
+<tr><td><b>PMO / CHO / Central</b></td><td>Central de Controle do GA-Study</td><td>Somente o código e conteúdo da Central de Controle.</td></tr>
+<tr><td><b>APP / GAS / Study</b></td><td>Aplicação Gibs Academy Study</td><td>Somente o código e funcionalidades da aplicação de estudos.</td></tr>
+</tbody></table></div>
+<div class="callout"><b>Regra operacional:</b> PMO / CHO / Central e APP / GAS / Study são dois códigos independentes. Uma solicitação de alteração em um deles NÃO autoriza alteração no outro.</div>
+<ul><li><b>APP/GAS executa:</b> exercícios, simulados, jogos, progresso e funcionalidades do produto.</li>
+<li><b>PMO/CHO governa e registra:</b> decisões, evolução, evidências, riscos, pendências, Gate Atual e continuidade.</li>
+<li>Alterar o CHO não significa que a funcionalidade foi implementada no APP.</li>
+<li>Evolução relevante implementada no APP deve depois ser refletida no CHO com status e evidência.</li>
+<li>Quando uma missão afetar ambos, separar explicitamente as ações em <b>APP/GAS</b> e <b>PMO/CHO</b>.</li></ul></div>
+<div class="section-card"><h3>Hard blocks</h3><ul>
+<li>Não alterar EAD, Supabase Auth, RLS, banco ou DNS a partir desta frente sem missão específica.</li>
+<li>Não apagar, resetar ou incompatibilizar o progresso local existente.</li>
+<li>Não substituir/refatorar o index de forma ampla sem baseline e rollback.</li>
+<li>Não marcar funcionalidade como concluída sem teste no ambiente publicado.</li>
+<li>Não reintroduzir conteúdo fora da apostila W2 em seções declaradas W2.</li>
+<li>Não sobrescrever versão anterior da Central após publicação.</li>
+</ul></div>
+
+<div class="section-card"><h3>Baselines preservados — não reabrir sem nova evidência</h3><ul>
+<li>Repositório oficial: <span class="code">cabaal74/GA-Study</span>.</li>
+<li>Branch oficial: <span class="code">main</span>.</li>
+<li>Produção oficial: <span class="code">study.gibsacademy.com.br</span>.</li>
+<li>Hospedagem/deploy: Cloudflare Pages.</li>
+<li>Backup de progresso foi restaurado com sucesso.</li>
+<li>Integração EAD ↔ Study: SIM COM RESSALVAS, implementação adiada.</li>
+<li>Identidade futura pode ser compartilhada; dados funcionais EAD e Study não devem ser misturados arbitrariamente.</li>
+</ul></div>
+
+
+<div class="section-card"><h3>Referência técnica preservada — Integração EAD ↔ GAS</h3>
+<p><b>Documento:</b> Relatório Técnico — Integração de Identidade e Progresso EAD ↔ GA-Study.</p>
+<ul>
+<li><b>Natureza:</b> auditoria, diagnóstico e arquitetura; nenhuma implementação foi realizada.</li>
+<li><b>Veredito:</b> SIM COM RESSALVAS.</li>
+<li><b>Identidade futura recomendada:</b> uma identidade Gibs Academy, usando <span class="code">auth.users.id</span> como identificador canônico.</li>
+<li><b>Separação:</b> EAD e APP/GAS permanecem produtos independentes, com dados funcionais separados.</li>
+<li><b>Segurança:</b> futuras tabelas Study devem adotar RLS baseada em <span class="code">auth.uid()</span>; <span class="code">service_role</span> nunca no frontend.</li>
+<li><b>Progresso:</b> manter localStorage; em arquitetura futura, nuvem = fonte oficial e localStorage = cache/fallback.</li>
+<li><b>Sincronização:</b> futura e controlada, com revisão/timestamp de servidor e tratamento de conflitos.</li>
+<li><b>SSO:</b> opcional e posterior; login em um subdomínio não implica sessão automática no outro.</li>
+<li><b>Migração:</b> não associar progresso local a uma conta sem identidade confirmada e nunca sobrescrever conflitos automaticamente.</li>
+<li><b>SaaS:</b> preservar conceitualmente identidade global separada de organização/membership/roles e de dados por produto.</li>
+</ul>
+<div class="callout"><b>Regra:</b> este relatório é referência arquitetural aprovada para planejamento, NÃO autorização para implementação. Nenhuma alteração em Auth, Supabase, EAD ou APP/GAS decorre automaticamente dele.</div>
+</div>
+
+
+<div class="section-card"><h3>Pontos ainda NÃO CONFIRMADOS — integração futura</h3>
+<ul>
+<li>Redirect URLs atuais do Supabase Auth.</li>
+<li>Site URL atual do Auth.</li>
+<li>Provedores sociais e confirmação de e-mail efetivamente configurados.</li>
+<li>Comportamento real de magic links em produção.</li>
+<li>Domínio canônico definitivo do EAD entre referências históricas distintas.</li>
+<li>Estrutura multi-tenant futura.</li>
+<li>Estratégia comercial do GAS dentro de um futuro SaaS.</li>
+<li>Necessidade futura de banco físico separado para Study.</li>
+</ul></div>
+
+<div class="section-card"><h3>Protocolo do próximo agente</h3><ol class="protocol">
+<li>Confirmar versão/data e ler este CURRENT HANDOFF primeiro.</li>
+<li>Identificar Gate Atual, bloqueios e dependências.</li>
+<li>Consultar apenas as páginas proprietárias ligadas ao Gate.</li>
+<li>Não reabrir itens encerrados nem promover status sem evidência.</li>
+<li>Executar uma missão por vez.</li>
+<li>Antes de alteração técnica, ler o arquivo oficial no GitHub e definir rollback.</li>
+<li>Após execução, validar produção e registrar a evidência.</li>
+<li>Ao fechar a rodada, sincronizar páginas afetadas, registrar melhorias adiadas e incrementar a versão.</li>
+</ol></div>
+
+<div class="section-card"><h3>Modelo de propriedade das páginas</h3><div class="standard">
+<div><b>Visão Geral</b><span>Resumo executivo apenas.</span></div>
+<div><b>Plano Mestre</b><span>Fases de evolução do produto.</span></div>
+<div><b>Desenvolvimento</b><span>Estado operacional das tarefas.</span></div>
+<div><b>Conferência</b><span>Cobertura de verificação/evidência.</span></div>
+<div><b>Riscos/Evidências</b><span>Risco residual e prova correspondente.</span></div>
+<div><b>Melhorias Futuras</b><span>Itens deliberadamente adiados.</span></div>
+<div><b>Evolução da Central</b><span>Mudanças da própria Central.</span></div>
+<div><b>CURRENT HANDOFF</b><span>Continuidade autônoma.</span></div>
+</div></div>
+
+<div class="section-card"><h3>Padrão oficial de informação</h3><div class="standard">
+<div><b>Título de página</b><span>Nome único da área.</span></div>
+<div><b>Subtítulo</b><span>Uma frase sobre a função da área.</span></div>
+<div><b>Título do item</b><span>ID + nome objetivo.</span></div>
+<div><b>Enunciado</b><span>1–2 linhas explicando o item.</span></div>
+<div><b>Metadados</b><span>ID · estado · data · severidade/prioridade · dependência.</span></div>
+<div><b>Detalhe/Evidência</b><span>Expande sem ser necessária para entender o estado principal.</span></div>
+</div></div>
+
+<div class="section-card"><h3>Regras visuais e de atualização</h3><ul>
+<li>Azul institucional único: <span class="code">#050A30</span>; variações funcionais derivam desse token.</li>
+<li>Toda informação cronológica aparece da mais recente para a mais antiga.</li>
+<li>Cor de estado não substitui severidade/prioridade.</li>
+<li>Melhoria adiada entra em Melhorias Futuras com motivo e momento de reavaliação.</li>
+<li>Evolução da Central registra versão, data, objetivo, áreas alteradas, mudança, resultado e pendência.</li>
+<li>Ao emitir versão nova, não sobrescrever arquivo anterior.</li>
+</ul></div>
+
+<details class="prompt-card" open><summary>Prompt — iniciar novo chat / continuidade oficial</summary><textarea id="prompt-new" readonly>Estou iniciando a continuidade oficial do projeto GA-Study — Gibs Academy.
+
+Use o arquivo CENTRAL_CONTROLE_GA_STUDY_V.X.X.html anexado, ou a versão mais recente armazenada no repositório cabaal74/GA-Study, como fonte principal de estado e continuidade.
+
+Leia primeiro:
+1. CURRENT HANDOFF;
+2. Visão Geral;
+3. Plano Mestre — GA-Study;
+4. Controle de Desenvolvimento;
+5. Conferência;
+6. Riscos e Evidências;
+7. Melhorias Futuras;
+8. Evolução da Central;
+9. Estado estruturado incorporado ao arquivo.
+
+Regras de continuidade:
+- Gibs Academy é a marca oficial.
+- GA-Study é uma aplicação independente do EAD.
+- O repositório oficial é cabaal74/GA-Study.
+- A branch oficial é main.
+- A URL oficial é https://study.gibsacademy.com.br.
+- O deploy de produção ocorre via Cloudflare Pages.
+- GitHub é a fonte oficial do código e da Central de Controle.
+- ChatGPT/Jarvis responde pela governança, requisitos, análise, conciliação e evolução da Central.
+- Nomenclatura oficial: PMO, CHO ou Central = Central de Controle; APP, GAS ou Study = aplicação Gibs Academy Study.
+- PMO/CHO e APP/GAS são códigos independentes; alterar um não autoriza alterar o outro.
+- Codex é o executor técnico para alterações no repositório quando necessário.
+- Use Chat normal como ambiente principal; Work/Codex somente quando a execução justificar o consumo da cota compartilhada.
+- Não reabra como dúvida algo já classificado ou encerrado na Central.
+- Não marque uma etapa como concluída sem evidência.
+- Quando eu trouxer respostas de chats históricos, faça a conciliação contra a Central atual e atualize nossos controles.
+- Toda informação cronológica deve ser exibida da mais recente para a mais antiga.
+- Uma informação possui uma página proprietária; outras páginas apenas resumem ou referenciam.
+- Não altere hard blocks sem necessidade explícita.
+- Antes de alterar código, leia a versão oficial no GitHub e preserve rollback.
+- Preserve progresso, backup/restauração e compatibilidade.
+- Não altere a plataforma EAD a partir deste projeto.
+- A integração de identidade EAD ↔ Study foi avaliada e está deliberadamente adiada.
+- O Relatório Técnico — Integração de Identidade e Progresso EAD ↔ GA-Study é referência arquitetural oficial do PMO/CHO.
+- Seu veredito é SIM COM RESSALVAS; ele NÃO representa implementação nem autoriza alterações em Auth, Supabase, EAD ou APP/GAS.
+- Não altere DNS, Cloudflare, Auth ou Supabase sem missão específica aprovada.
+- Continue em português PT-BR.
+
+Antes de executar qualquer nova missão, confirme versão, Gate Atual e CURRENT HANDOFF e continue exatamente dali.</textarea><button class="copy-btn" data-copy="prompt-new">Copiar prompt</button><span class="copy-msg"></span></details>
+<details class="prompt-card" open><summary>Prompt — extrair HANDOFF HISTÓRICO de chat antigo</summary><textarea id="prompt-historical" readonly>Estamos realizando a consolidação histórica do projeto GA-Study — Gibs Academy em sua Central de Controle.
+
+Analise SOMENTE o histórico existente neste chat. Não execute alterações, não crie código, não faça deploy e não proponha uma nova arquitetura.
+
+Preciso que você produza um HANDOFF HISTÓRICO contendo apenas informações que estejam efetivamente sustentadas por esta conversa.
+
+Identifique:
+1. O que foi implementado ou concluído neste chat.
+2. Decisões técnicas ou de negócio tomadas e que deveriam ser preservadas.
+3. Problemas, bugs ou riscos identificados.
+4. Pendências que ficaram abertas ou sem confirmação.
+5. Testes ou validações que foram realizados e seus resultados.
+6. Alterações relevantes feitas em HTML, CSS, JavaScript, exercícios, simulados, Question Words, Matching Game, progresso, backup/restauração, GitHub, Cloudflare, domínio ou segurança.
+7. Prompts enviados ao Codex, agentes ou outras ferramentas que resultaram em mudanças relevantes.
+8. Qual era o último ponto de trabalho quando este chat foi interrompido.
+
+Para cada informação importante, classifique como:
+- CONCLUÍDO
+- DECISÃO
+- PENDENTE
+- RISCO
+- EVIDÊNCIA
+- ÚLTIMO PONTO
+
+Não considere uma intenção ou proposta como implementação concluída.
+
+Quando não houver evidência suficiente, escreva: NÃO CONFIRMADO NESTE CHAT.
+
+Não tente reconciliar essas informações com o estado atual do projeto, porque essa conciliação será feita externamente pela Central de Controle.
+
+Ao final, crie uma seção:
+
+ITENS QUE VALEM SER LEVADOS PARA A CENTRAL DE CONTROLE
+
+contendo somente os fatos deste chat que possam alterar, complementar ou contradizer o Plano Mestre, o Controle de Desenvolvimento, os Riscos/Evidências ou o CURRENT HANDOFF atual.
+
+Apresente qualquer informação cronológica da mais recente para a mais antiga.
+
+Seja objetivo, mas não omita pendências técnicas importantes.</textarea><button class="copy-btn" data-copy="prompt-historical">Copiar prompt</button><span class="copy-msg"></span></details>
+
+<div class="callout danger"><b>Regra de fechamento de rodada:</b> revisar Visão Geral, Plano Mestre, Controle de Desenvolvimento, Conferência, Riscos e Evidências, Melhorias Futuras, Evolução da Central, CURRENT HANDOFF, Gate Atual e estado estruturado; corrigir contradições; registrar qualquer melhoria adiada; garantir ordem cronológica decrescente; somente então emitir a próxima versão.</div>
+</section>
+
+<div class="footer">Gibs Academy · GA-Study · Central de Controle V.1.4 · Auditoria inicial de governança realizada em 06/09/2026.</div>
+</main></div>
+
+<script>
+const buttons=[...document.querySelectorAll('.nav button')];
+const pages=[...document.querySelectorAll('.page')];
+buttons.forEach(btn=>btn.addEventListener('click',()=>{
+  const target=document.getElementById(btn.dataset.page);
+  if(!target)return;
+  buttons.forEach(b=>b.classList.remove('active'));
+  pages.forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  target.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+document.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',()=>{
+  const id=btn.getAttribute('data-copy'), el=document.getElementById(id);
+  const msg=btn.nextElementSibling;
+  const done=()=>{if(msg){msg.textContent='Copiado!';setTimeout(()=>msg.textContent='',1800)}};
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(el.value).then(done).catch(()=>{el.select();document.execCommand('copy');done()});
+  }else{el.select();document.execCommand('copy');done()}
+}));
+</script>
+<script id="gaStudyUnifiedState" type="application/json">{"schemaVersion": "1.4", "updatedAt": "2026-09-06", "brand": "Gibs Academy", "project": "GA-Study", "authority": "CURRENT / PRE-PUBLICATION AUDIT", "sourceOfTruth": {"code": "cabaal74/GA-Study / main", "production": "https://study.gibsacademy.com.br", "control": "CENTRAL_CONTROLE_GA_STUDY_V.1.4.html"}, "chronologicalOrder": "DESCENDING_NEWEST_FIRST", "currentGate": "Fechar a auditoria inicial da Central V.1.4 e aprovar o baseline de governança antes da publicação em /control.", "currentHandoff": {"lastCompleted": "Auditoria estrutural da Central GA-Study contra o conceito da Central Gibs Academy V.2.4 e consolidação detalhada do histórico desta conversa.", "blocked": ["Escrita direta pelo plugin GitHub do ChatGPT não está disponível para o repositório; execução de escrita fica para Codex ou upload manual aprovado.", "Codex/Work estava sem cota disponível no momento da verificação; isto não bloqueia governança no Chat normal."], "next": "Aprovar esta V.1.4; depois publicar em /control e validar o index.html oficial antes de retomar o Matching Game."}, "ownershipModel": {"overview": "Resumo executivo; não é proprietária de detalhes.", "masterPlan": "Fases de evolução do produto/aplicação.", "developmentControl": "Estado operacional das tarefas de desenvolvimento.", "conference": "Cobertura de verificação/evidência; não redefine o item.", "risksEvidence": "Riscos atuais/residuais e provas que sustentam estados.", "future": "Melhorias deliberadamente adiadas.", "evolution": "Mudanças da própria Central; não duplica estado operacional.", "handoff": "Continuidade autônoma."}, "governanceRules": ["PMO/CHO/Central e APP/GAS/Study são artefatos independentes; alterações exigem escopo explícito.", "Uma informação tem uma única página proprietária.", "Itens cronológicos são exibidos do mais recente para o mais antigo.", "Nenhum item vira concluído sem evidência.", "Mudanças aprovadas na Central geram nova versão; versões anteriores não são sobrescritas.", "Ao fechar uma rodada, revisar páginas afetadas, Gate Atual, CURRENT HANDOFF e estado estruturado.", "Toda melhoria identificada e não implementada deve entrar em Melhorias Futuras.", "Hard blocks não são reabertos sem nova evidência.", "Gate Atual deve representar a próxima ação realmente executável; dependências bloqueadas não ocupam o gate."], "productBaselines": ["GA-Study permanece independente do EAD.", "GitHub GA-Study/main é a fonte oficial do código.", "Cloudflare Pages publica a produção em study.gibsacademy.com.br.", "Progresso atual permanece local por navegador com backup/restauração.", "Integração de identidade EAD ↔ Study foi avaliada como SIM COM RESSALVAS e está adiada.", "Testes W2 devem respeitar o conteúdo efetivamente estudado na apostila W2.", "How old / How often / How long / How far não devem ser reintroduzidos como conteúdo W2 sem nova evidência didática.", "Matching Game permanece pendente: 60 s, cinco linhas, pares PT↔EN, aleatoriedade, verde no acerto e vermelho no erro."], "officialTerminology": {"PMO_CHO_Central": "Central de Controle do GA-Study", "APP_GAS_Study": "Aplicação Gibs Academy Study", "rule": "São códigos independentes; alterar um não autoriza alterar o outro."}, "integrationAudit": {"document": "Relatório Técnico — Integração de Identidade e Progresso EAD ↔ GA-Study", "missionStatus": "AUDITORIA / DIAGNÓSTICO / ARQUITETURA", "implementations": "NENHUMA", "productionChanges": "NENHUMA", "verdict": "SIM COM RESSALVAS", "architecture": ["Uma identidade Gibs Academy baseada em auth.users.id", "EAD e APP/GAS independentes", "Dados funcionais separados por domínio", "RLS futura do Study baseada em auth.uid()", "localStorage preservado como cache/fallback", "Sincronização futura controlada", "SSO opcional em fase posterior"], "rule": "Referência arquitetural para planejamento; não autoriza implementação."}}</script>
+</body></html>
