@@ -468,7 +468,7 @@ nav button{padding:9px 11px;min-height:36px;font-size:13px}
 </aside>
 
 <main class="main">
-<div class="top"><div><h1 id="appTitle">GA-Study — Central de Controle</h1><p id="appDescription">Governança universal do GA-Study — Gibs Academy: evolução, riscos, evidências e continuidade.</p></div><div class="version" id="version">V1.02</div></div>
+<div class="top"><div><h1 id="appTitle">GA-Study — Central de Controle</h1><p id="appDescription">Governança universal do GA-Study — Gibs Academy: evolução, riscos, evidências e continuidade.</p></div><div class="version" id="version">V1.03</div></div>
 
 
 <section class="page active" id="guide">
@@ -851,7 +851,7 @@ Só depois da análise, gere a nova versão.</textarea>
     <div class="card metric"><div class="label">Melhorias futuras</div><div class="n" id="mFuture">0</div><div class="mini">Fila futura</div></div>
     <div class="card metric"><div class="label">Riscos</div><div class="n" id="mRisks">0</div><div class="mini">Riscos documentados</div></div>
     <div class="card wide"><div class="section-title">Últimas alterações</div><div id="overviewChanges" class="empty"><strong>Nenhuma alteração registrada</strong><span>O histórico começará no primeiro preenchimento.</span></div></div>
-    <div class="card side"><div class="section-title">Estado da central</div><div class="notice"><b>Migração Universal concluída documentalmente.</b><br>A Central antiga foi preservada. A V1.02 está reconciliada e pronta para publicação em /control; a publicação no repositório ainda precisa ser comprovada.</div></div>
+    <div class="card side"><div class="section-title">Estado da central</div><div class="notice"><b>Central Universal publicada e reconciliada.</b><br>A V1.03 passa a operar em <code>/pmo-cho/</code>. A estrutura oficial do repositório foi simplificada para raiz, PMO/CHO e Teste W2; o próximo gate é publicar e validar a correção semântica combinada de WHAT e WHERE no Matching Game.</div></div>
   </div>
 </section>
 
@@ -904,20 +904,20 @@ Só depois da análise, gere a nova versão.</textarea>
   </div>
 
   <div class="handoff-highlight">
-    <div class="handoff-highlight-top"><div><span class="label">PONTO ATUAL</span><h3 id="handoffMission">Corrigir a equivalência WHERE ↔ ONDE/AONDE no Matching Game</h3></div><span class="badge">V1.02</span></div>
-    <p><strong>Estado reconciliado.</strong> A Central antiga V.1.6 foi usada somente como fonte histórica; o pacote GA-Study-main e as validações funcionais informadas por Cássio em 28/09/2026 foram reconciliados. APP/GAS e Final Test W2 foram validados em desktop e iPhone. O Matching Game está funcional com uma única ressalva conhecida na duplicidade de WHERE. A MISSÃO-002 de integração EAD ↔ Study permanece futura e não autoriza alterações em EAD, Auth, Supabase, Cloudflare ou DNS.</p>
+    <div class="handoff-highlight-top"><div><span class="label">PONTO ATUAL</span><h3 id="handoffMission">Publicar e validar a correção semântica WHAT/WHERE no Matching Game</h3></div><span class="badge">V1.03</span></div>
+    <p><strong>Estado reconciliado em 29/09/2026.</strong> O repositório foi reorganizado para <code>/</code>, <code>/pmo-cho/</code> e <code>/testes/w2/</code> e os três caminhos foram validados em produção por Cássio. O Matching Game permanece funcional, porém o falso erro por ID físico foi confirmado em dois grupos: <strong>WHAT ↔ O QUE/QUAL</strong> e <strong>WHERE ↔ ONDE/AONDE</strong>. Um arquivo candidato com chaves semânticas compartilhadas foi preparado, mas sua publicação e o reteste final ainda não foram confirmados. Separadamente, uma regra/bot Cloudflare voltou a aparecer e foi excluída; a causa permanece não confirmada e só deve ser investigada se reaparecer, preservando evidências antes da remoção.</p>
     <div class="handoff-status-grid">
-      <div><span>Central</span><b>V1.02</b><small>Modelo Universal</small></div>
+      <div><span>Central</span><b>V1.03</b><small>Modelo Universal</small></div>
       <div><span>Aplicação</span><b id="handoffAppName">GA-Study</b><small>Gibs Academy</small></div>
       <div><span>Ferramenta</span><b id="handoffTool">GitHub / executor autorizado</b><small>execução sob missão</small></div>
-      <div><span>Próximo passo</span><b>Correção cirúrgica do WHERE</b><small>depois retestar somente esse cenário</small></div>
+      <div><span>Próximo passo</span><b>Publicar + retestar WHAT/WHERE</b><small>depois encerrar a ressalva se aprovado</small></div>
     </div>
   </div>
 
   <details class="handoff-section" open><summary>Estado atual confirmado</summary><div class="handoff-section-body">
     <div class="handoff-card-grid">
       <article class="handoff-card"><h3>Fontes oficiais e estrutura</h3><ul>
-        <li>Marca: Gibs Academy.</li><li>Aplicação: GA-Study.</li><li>Repositório: <code>cabaal74/GA-Study</code>; branch <code>main</code>.</li><li>Produção registrada: <code>https://study.gibsacademy.com.br</code>.</li><li>APP/GAS: raiz <code>/</code>.</li><li>PMO/CHO: <code>/control/</code>.</li><li>TESTES: <code>/testes/</code>; Final Test W2: <code>/testes/final-test-w2/</code>.</li>
+        <li>Marca: Gibs Academy.</li><li>Aplicação: GA-Study.</li><li>Repositório: <code>cabaal74/GA-Study</code>; branch <code>main</code>.</li><li>Produção registrada: <code>https://study.gibsacademy.com.br</code>.</li><li>APP/GAS: raiz <code>/</code>.</li><li>PMO/CHO: <code>/pmo-cho/</code>.</li><li>Final Test W2: <code>/testes/w2/</code>.</li><li>Cássio confirmou que os três caminhos abrem normalmente em produção.</li>
       </ul></article>
       <article class="handoff-card"><h3>Aplicação confirmada no código fornecido</h3><ul>
         <li>Módulos: Perguntas, Traduza, Unscramble, Listening Unscramble, Vocabulário, Verbos em Frases, Treino de Verbos e Formas Verbais.</li>
@@ -929,21 +929,21 @@ Só depois da análise, gere a nova versão.</textarea>
   </div></details>
 
   <details class="handoff-section" open><summary>Próxima missão autorizada e Gate</summary><div class="handoff-section-body">
-    <div class="notice"><b>Gate atual:</b> executar somente a correção cirúrgica do Matching Game para que <code>WHERE ↔ ONDE</code> e <code>WHERE ↔ AONDE</code> sejam aceitos por equivalência semântica quando houver duas instâncias de <code>WHERE</code>. Depois, repetir apenas esse teste de regressão.</div>
-    <ol class="guide-list"><li>Alterar somente a lógica de validação do Matching Game no Final Test W2 isolado.</li><li>Preservar todo o restante do comportamento já validado em desktop e iPhone.</li><li>Após a correção, testar apenas o cenário com dois cards WHERE e traduções ONDE/AONDE.</li><li>Se aprovado, encerrar a ressalva na Central e no Obsidian.</li><li>A MISSÃO-002 de identidade/progresso EAD ↔ Study permanece planejada e não autorizada para implementação.</li></ol>
+    <div class="notice"><b>Gate atual:</b> publicar em <code>/testes/w2/index.html</code> o candidato já preparado, no qual <code>O que</code> e <code>Qual</code> compartilham a chave semântica <code>what</code>, e <code>Onde</code> e <code>Aonde</code> compartilham a chave <code>where</code>. Depois executar somente o reteste combinado.</div>
+    <ol class="guide-list"><li>Publicar o arquivo candidato preparado para <code>/testes/w2/index.html</code>.</li><li>Testar rodada com dois <code>WHAT</code>: tanto <code>O que</code> quanto <code>Qual</code> devem ser aceitos por qualquer instância válida de WHAT.</li><li>Testar rodada com dois <code>WHERE</code>: tanto <code>Onde</code> quanto <code>Aonde</code> devem ser aceitos por qualquer instância válida de WHERE.</li><li>Preservar timer, pontuação, sorteio, layout e comportamento mobile já validados.</li><li>Se aprovado, encerrar AUD-007, CONF-005 e ST-007 e reconciliar Obsidian.</li><li>A MISSÃO-002 de identidade/progresso EAD ↔ Study permanece planejada e não autorizada para implementação.</li></ol>
   </div></details>
 
   <details class="handoff-section"><summary>Hard blocks e limites de evidência</summary><div class="handoff-section-body"><ul class="guide-list">
     <li>Não alterar EAD, Supabase Auth, RLS, banco ou DNS a partir desta frente sem missão específica.</li>
     <li>Relatório EAD ↔ Study é arquitetura de planejamento; implementações e alterações em produção registradas: nenhuma.</li>
     <li>Final Test W2 já foi validado funcionalmente em desktop e iPhone por Cássio em 28/09/2026.</li>
-    <li>Matching Game foi validado funcionalmente, restando apenas a ressalva conhecida da duplicidade de WHERE.</li>
+    <li>Matching Game foi validado funcionalmente, restando a ressalva semântica de duplicidade em WHAT (O QUE/QUAL) e WHERE (ONDE/AONDE).</li><li>Cloudflare: se a regra/bot reaparecer, não excluir antes de capturar nome, ação, expressão/condições, identificador e evidência em Security/Events ou Trace. A causa atual é desconhecida.</li>
     <li>Não presumir que todos os itens da base W2 incorporada estejam didaticamente corretos.</li>
     <li>R-006 foi citado como encerrado no legado, mas seu corpo não foi recuperado; não reconstruir por inferência.</li>
   </ul></div></details>
 
   <details class="handoff-section"><summary>Protocolo para o próximo chat/agente</summary><div class="handoff-section-body"><ol class="guide-list">
-    <li>Ler Regras da Central e este CURRENT HANDOFF.</li><li>Confirmar a versão V1.02 e o Gate.</li><li>Consultar somente as páginas proprietárias ligadas à missão.</li><li>Distinguir implementado, validado e concluído.</li><li>Preservar IDs, datas, evidências e limitações.</li><li>Executar uma missão por vez.</li><li>Ao concluir uma missão, atualizar proprietário, evidência, Conferência, CURRENT HANDOFF e Evolução conforme necessário.</li>
+    <li>Ler Regras da Central e este CURRENT HANDOFF.</li><li>Confirmar a versão V1.03 e o Gate.</li><li>Consultar somente as páginas proprietárias ligadas à missão.</li><li>Distinguir implementado, validado e concluído.</li><li>Preservar IDs, datas, evidências e limitações.</li><li>Executar uma missão por vez.</li><li>Ao concluir uma missão, atualizar proprietário, evidência, Conferência, CURRENT HANDOFF e Evolução conforme necessário.</li>
   </ol></div></details>
 <details class="handoff-section">
     <summary>Prompt — iniciar continuidade em novo chat</summary>
@@ -1272,16 +1272,16 @@ Se nenhuma tela estiver cadastrada de forma suficiente na Central, a PRIMEIRA re
   <div id="evolutionList" class="list"></div><div id="evolutionEmpty" class="empty"><strong>Nenhum registro de evolução</strong><span>Pronto para o primeiro registro.</span></div>
 </section>
 
-<div class="footer"><span>GA-Study — Central de Controle</span><span>GA-Study • Modelo Universal V1.02 • arquivo HTML único</span></div>
+<div class="footer"><span>GA-Study — Central de Controle</span><span>GA-Study • Modelo Universal V1.03 • arquivo HTML único</span></div>
 </main>
 </div>
 
 <script>
 const DATA={
   "meta": {
-    "version": "V1.02",
-    "analyzedAt": "2026-09-28",
-    "updatedAt": "2026-09-28"
+    "version": "V1.03",
+    "analyzedAt": "2026-09-29",
+    "updatedAt": "2026-09-29"
   },
   "rules": [
     {
@@ -1468,8 +1468,8 @@ const DATA={
       "title": "Matching Game — Question Words",
       "objective": "Disponibilizar exercício de associação de Question Words no contexto W2.",
       "currentState": "Matching Game confirmado no Final Test W2 e funcionalmente validado por Cássio em desktop e iPhone em 28/09/2026. Timer, início, estados de acerto/erro e renovação de cards funcionam.",
-      "gap": "Quando duas instâncias de WHERE aparecem simultaneamente, ONDE e AONDE podem ser semanticamente corretos, mas o runtime ainda vincula o acerto ao ID/par físico específico e pode marcar uma resposta correta como erro.",
-      "nextStep": "Corrigir de forma cirúrgica a validação para equivalência semântica WHERE ↔ ONDE/AONDE e retestar somente esse cenário."
+      "gap": "O falso erro por ID físico foi confirmado em dois grupos: WHAT ↔ O QUE/QUAL e WHERE ↔ ONDE/AONDE. Um candidato com chaves semânticas compartilhadas foi preparado, mas ainda não há confirmação de publicação/reteste.",
+      "nextStep": "Publicar o candidato em /testes/w2/index.html e retestar os dois grupos semânticos; se aprovado, encerrar a ressalva."
     },
     {
       "id": "ST-006",
@@ -1537,10 +1537,10 @@ const DATA={
       "id": "AUD-007",
       "launchDate": "2026-09-28",
       "status": "ABERTO",
-      "title": "Reteste cirúrgico — WHERE duplicado no Matching Game",
+      "title": "Reteste cirúrgico — equivalências WHAT e WHERE no Matching Game",
       "area": "Testes W2",
-      "control": "Após a correção, reproduzir rodada com duas instâncias de WHERE e traduções ONDE/AONDE.",
-      "criterion": "Qualquer instância de WHERE deve aceitar ONDE ou AONDE quando a combinação for semanticamente válida, sem falso erro por ID físico do card.",
+      "control": "Após publicar o candidato corrigido, reproduzir rodadas com duas instâncias de WHAT e duas instâncias de WHERE.",
+      "criterion": "WHAT deve aceitar O QUE ou QUAL; WHERE deve aceitar ONDE ou AONDE; nenhuma combinação semanticamente válida pode falhar por ID físico do card.",
       "evidence": "ST-007 · E-011 · CURRENT HANDOFF"
     },
     {
@@ -1662,6 +1662,17 @@ const DATA={
   ],
   "risks": [
     {
+      "id": "R-008",
+      "launchDate": "2026-09-29",
+      "date": "2026-09-29",
+      "status": "ABERTO",
+      "title": "Regra/bot Cloudflare reaparece sem causa confirmada",
+      "severity": "MÉDIO",
+      "description": "Cássio relatou recorrência de regra/bot Cloudflare e página de verificação humana; a regra foi excluída antes de captura completa dos metadados.",
+      "impact": "Pode provocar challenges inesperados; não há relação causal comprovada com o HTML do GA-Study.",
+      "mitigation": "Se reaparecer, capturar nome, ação, expressão, identificador e Events/Trace antes de excluir."
+    },
+    {
       "id": "R-007",
       "launchDate": "2026-09-28",
       "date": "2026-09-06",
@@ -1729,6 +1740,28 @@ const DATA={
     }
   ],
   "evidence": [
+    {
+      "id": "E-014",
+      "launchDate": "2026-09-29",
+      "date": "2026-09-29",
+      "status": "CONCLUÍDO",
+      "title": "Diagnóstico semântico do Matching Game — WHAT e WHERE",
+      "source": "Código de testes/w2/index.html + teste visual de Cássio",
+      "summary": "Confirmado falso erro por chaves distintas em WHAT/O que/Qual e WHERE/Onde/Aonde; candidato com chaves compartilhadas preparado.",
+      "proof": "Comprova causa lógica e preparação da correção; publicação e reteste ainda não confirmados.",
+      "reference": "ST-007 · AUD-007 · CONF-005"
+    },
+    {
+      "id": "E-013",
+      "launchDate": "2026-09-29",
+      "date": "2026-09-28",
+      "status": "CONCLUÍDO",
+      "title": "Reorganização canônica do repositório GA-Study",
+      "source": "GitHub + validação de Cássio",
+      "summary": "Estrutura corrente: index.html, pmo-cho/index.html e testes/w2/index.html; os três caminhos foram validados em produção.",
+      "proof": "Comprova a estrutura corrente e sua abertura em produção.",
+      "reference": "ST-006 · CONF-002"
+    },
     {
       "id": "E-012",
       "launchDate": "2026-09-28",
@@ -1941,6 +1974,16 @@ const DATA={
     }
   ],
   "evolution": [
+    {
+      "id": "EVOL-004",
+      "launchDate": "2026-09-29",
+      "date": "2026-09-29",
+      "status": "CONCLUÍDO",
+      "title": "Estrutura canônica + equivalências WHAT/WHERE + observação Cloudflare",
+      "version": "V1.03",
+      "description": "Central reconciliada para continuidade em novo chat com estrutura /pmo-cho/ e /testes/w2/, correção WHAT/WHERE preparada e risco Cloudflare separado.",
+      "reason": "Preservar estado factual sem confundir candidato preparado com correção publicada."
+    },
     {
       "id": "EVOL-003",
       "launchDate": "2026-09-28",
